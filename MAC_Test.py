@@ -1,7 +1,7 @@
 import pyomo.environ as pyo
 import numpy as np
 # from Algorithms.ADMM_Scaled_Consensus_acc import System as ADMM_Scaled_acc
-from Algorithms.ADMM_Scaled_Consensus1 import System as ADMM_Scaled
+from Algorithms.ADMM_Scaled_Consensus import System as ADMM_Scaled
 
 from Algorithms.Coordinator_Augmented import System as Coordinator_ADMM
 from Algorithms.CUATRO import CUATRO
