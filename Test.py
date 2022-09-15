@@ -163,5 +163,5 @@ ax2.legend()
 problem = 'Test_function_1'
 fig1.tight_layout()
 fig2.tight_layout()
-fig1.savefig('./src/Figures/0817/' + problem +'_conv1.svg', format = "svg")
-fig2.savefig('./src/Figures/0817/' + problem +'_evals1.svg', format = "svg")
+fig1.savefig('./src/Figures/' + problem +'_conv1.svg', format = "svg")
+fig2.savefig('./src/Figures/' + problem +'_evals1.svg', format = "svg")
