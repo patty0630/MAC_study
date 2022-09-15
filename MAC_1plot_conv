@@ -1,0 +1,64 @@
+import pyomo.environ as pyo
+import numpy as np
+import matplotlib.pyplot as plt
+
+from utilitiesp import postprocessing
+from utilitiesp import postprocessing_List
+from Problems.MAC import centralized_conv, centralized_nonconv
+
+import pickle
+
+
+N_list = [8]
+for i in N_list:
+    
+    rho=1e5
+    pen=int(np.log10(rho))
+
+    N = i
+    N_var = 10
+    
+    N_it=500
+    
+    s_list = ['ADMM', 'CUATRO', 'Py-BOBYQA', 'DIRECT-L']
+    problem = 'MAC_conv_'
+    
+    data_dict = {}
+    for k in range(len(s_list)):
+        with open('./Data/' + problem + str(N_var) + 'dim_' + str(N) + 'agents_1E' + str(pen) + '_' + s_list[k] + '.pickle', 'rb') as handle:
+            data_dict[s_list[k]] = pickle.load(handle)
+    
+    
+        
+    fig1 = plt.figure() 
+    ax1 = fig1.add_subplot()  
+    fig2 = plt.figure() 
+    ax2 = fig2.add_subplot()  
+    
+    s = 'ADMM'
+    out = postprocessing(ax1, ax2,  s, data_dict[s], None, c='dodgerblue', N=N)
+    ax1, ax2 = out
+    
+    s = 'CUATRO'
+    out = postprocessing_List(ax1, ax2, s, data_dict[s], None, coord_input = True, c='darkorange', N_it=N_it)
+    ax1, ax2 = out
+    
+    s = 'Py-BOBYQA'
+    out = postprocessing(ax1, ax2, s, data_dict[s], None, coord_input = True, c='green')
+    ax1, ax2 = out
+    
+    s = 'DIRECT-L'
+    out = postprocessing_List(ax1, ax2, s, data_dict[s], None, coord_input = True, c='red', N_it=N_it)
+    ax1, ax2 = out
+    
+    
+    
+    ax2.set_xlabel('Number of function evaluations')
+    ax2.set_ylabel('Evaluated global objective function, F')
+    ax2.set_yscale('log')
+    ax2.legend()
+    
+    fig2.tight_layout()
+    problem = 'MAC_conv_'
+    fig2.savefig('./Figures/' + str(N_var) + '/' + problem + str(N) + 'agents_1E' + str(pen) + '_evals.svg', format = "svg")
+    
