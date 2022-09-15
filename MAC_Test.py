@@ -19,11 +19,11 @@ from Problems.MAC import f2Lin as f2LinRaw
 
 import pickle
 
-rho = 1e4
+
 N_list = [3,4,6,8]
 
 for i in N_list:
-    
+    rho = 1e4
     pen=int(np.log10(rho))
 
     N_it = 500
@@ -141,6 +141,9 @@ for i in N_list:
 
     
 
+    rho = 1e5
+    pen=int(np.log10(rho))
+    
     def f1Lin(z_list, rho, global_ind, index, ver, u_list = None, solver = False):
         return f1LinRaw(z_list, rho, global_ind, index, ver, u_list = None, solver = False, dim=N_var)
     def f2Lin(z_list, rho, global_ind, index, ver, u_list = None, solver = False):
