@@ -9,14 +9,14 @@ from Problems.MAC import centralized_conv, centralized_nonconv
 import pickle
 
 
-N_list = [3,4,6,8]
+N_list = [6,8]
 for i in N_list:
     
     rho=1e4
     pen=int(np.log10(rho))
 
     N = i
-    N_var = 25
+    N_var = 10
     
     N_it=500
     
