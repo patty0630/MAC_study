@@ -1,0 +1,70 @@
+import pyomo.environ as pyo
+import numpy as np
+import matplotlib.pyplot as plt
+
+from utilities import postprocessing
+from utilities import postprocessing_List
+from Problems.MAC import centralized_conv, centralized_nonconv
+
+import pickle
+
+
+N_list = [3,4]
+for i in N_list:
+    
+    rho=1e4
+    pen=int(np.log10(rho))
+
+    N_it = 500
+    N = i
+    N_var = 10
+        
+    data_centr = {None: {'I': {None: list(np.arange(N_var)+1)}}}
+    res = centralized_nonconv(data_centr, N, dim=N_var)
+    
+    s_list = ['ADMM', 'CUATRO', 'Py-BOBYQA', 'DIRECT-L']
+    problem = 'MAC_nonconv_'
+    
+    data_dict = {}
+    for k in range(len(s_list)):
+        with open('./Data/' + problem + str(N_var) + 'dim_' + str(N) + 'agents_1E' + str(pen) + '_' + s_list[k] + '.pickle', 'rb') as handle:
+            data_dict[s_list[k]] = pickle.load(handle)
+    
+    fig1 = plt.figure() 
+    ax1 = fig1.add_subplot()  
+    fig2 = plt.figure() 
+    ax2 = fig2.add_subplot()  
+    
+    s = 'ADMM'
+    out = postprocessing(ax1, ax2,  s, data_dict[s], pyo.value(res.obj), c='dodgerblue', N=N)
+    ax1, ax2 = out
+    
+    s = 'CUATRO'
+    out = postprocessing_List(ax1, ax2, s, data_dict[s], pyo.value(res.obj), coord_input = True, c='darkorange', N_it=N_it)
+    ax1, ax2 = out
+    
+    s = 'Py-BOBYQA'
+    out = postprocessing(ax1, ax2, s, data_dict[s], pyo.value(res.obj), coord_input = True, c='green')
+    ax1, ax2 = out
+    
+    s = 'DIRECT-L'
+    out = postprocessing_List(ax1, ax2, s, data_dict[s], pyo.value(res.obj), coord_input = True, c='red', N_it=N_it)
+    ax1, ax2 = out
+    
+    ax1.set_xlabel('Number of function evaluations')
+    ax1.set_ylabel('Tolerated error, $\epsilon$')
+    ax1.set_yscale('log')
+    ax1.legend()
+    
+    ax2.set_xlabel('Number of function evaluations')
+    ax2.set_ylabel('Evaluated global objective function, F')
+    ax2.set_yscale('log')
+    ax2.plot([1, N_it], [pyo.value(res.obj), pyo.value(res.obj)], '--k', label = 'Centralized')
+    ax2.legend()
+    
+    problem = 'MAC_nonc_'
+    
+    fig1.tight_layout()
+    fig2.tight_layout()
+    fig1.savefig('./Figures/' + str(N_var) + '/' + problem + str(N) + 'agents_1E' + str(pen) + '_conv.svg', format = "svg")
+    fig2.savefig('./Figures/' + str(N_var) + '/' + problem + str(N) + 'agents_1E' + str(pen) + '_evals.svg', format = "svg")
